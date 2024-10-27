@@ -1,0 +1,48 @@
+# AutoWiFiConnect Library for Arduino Uno R4 WiFi
+
+## Overview
+
+**AutoWiFiConnect** is an Arduino library designed for the Arduino Uno R4 WiFi board. It simplifies the process of connecting your Arduino to WiFi networks by scanning for available networks and automatically connecting to one of your predefined networks if available.
+
+## Features
+
+- **Automatic WiFi Connection**: Scans for available WiFi networks and connects to a known network if found.
+- **Multiple Network Support**: Stores multiple WiFi credentials to connect to different networks seamlessly.
+- **Easy Integration**: Simple API for adding networks and initiating connections.
+- **Debugging Support**: Provides serial output for monitoring connection status and troubleshooting.
+
+## Requirements
+
+- **Hardware**: Arduino Uno R4 WiFi
+- **Software**:
+  - Arduino IDE (latest version recommended)
+  - **WiFiS3** library (included with the board support for Uno R4 WiFi)
+
+## Installation
+
+1. **Download the Library**:
+
+   - Download the `AutoWiFiConnect.h` and `AutoWiFiConnect.cpp` files.
+
+2. **Create Library Folder**:
+
+   - Navigate to your Arduino libraries directory (usually `Documents/Arduino/libraries/`).
+   - Create a new folder named `AutoWiFiConnect`.
+
+3. **Add Library Files**:
+
+   - Copy `AutoWiFiConnect.h` and `AutoWiFiConnect.cpp` into the `AutoWiFiConnect` folder.
+
+4. **Restart Arduino IDE**:
+   - Close and reopen the Arduino IDE to recognize the new library.
+
+## Usage
+
+### 1. Include the Library
+
+At the top of your Arduino sketch, include the necessary headers:
+
+```cpp
+#include <WiFiS3.h>          // WiFi library for Arduino Uno R4 WiFi
+#include <AutoWiFiConnect.h> // Include the AutoWiFiConnect library
+```
