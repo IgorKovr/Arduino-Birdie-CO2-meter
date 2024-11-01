@@ -159,7 +159,6 @@ void setServoPosition(int position)
 {
   if (servoPosition == position)
   {
-    Serial.println("Servo already in position. Skipping...");
     return;
   }
 
@@ -172,6 +171,6 @@ void setServoPosition(int position)
   Serial.println("Moving servo...");
   servoPosition = position;
   servo.write(position);
-  delay(600);
+  delay(400);
   servo.detach();
 }
