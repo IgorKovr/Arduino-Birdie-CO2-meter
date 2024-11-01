@@ -17,26 +17,25 @@ void playLEDMatrixLoadingAnimation();
 void printOnLEDMatrix(String displayText);
 void setServoPosition(int position);
 
-const int SERVO_POSITION_DOWN = 1;
-const int SERVO_POSITION_UP = 1179;
+const int SERVO_PIN = 3;
+const int SERVO_POSITION_DOWN = 0;
+const int SERVO_POSITION_UP = 180;
+const int SERVO_POSITION_SETUP = 90;
 const int LOW_CO2_THRESHOLD = 1000;
 const int HIGH_CO2_THRESHOLD = 1200;
 const int SERIAL_MONITOR_BAUD_RATE = 9600;
 
-int servoPosition = 42; // setting to random number as we dont know the initial position
+int servoPosition = SERVO_POSITION_SETUP;
 
 void setup()
 {
   playLEDMatrixLoadingAnimation();
 
   // Servo Setup;
-  // attach on pin 3, set to down position
-  servo.attach(3);
-  setServoPosition(SERVO_POSITION_DOWN);
+  servo.attach(SERVO_PIN);
+  setServoPosition(SERVO_POSITION_SETUP);
 
   Serial.begin(SERIAL_MONITOR_BAUD_RATE);
-  // Wait for a Serial Monitor
-  delay(1000);
 
   // Add known networks (SSID and Password)
   wifiConnector.addNetwork(SECRET_SSID, SECRET_PASS);
@@ -55,14 +54,13 @@ void setup()
     Serial.println("Failed to connect to any known WiFi networks.");
   }
 
-  // Defined in thingProperties.h
-  initProperties();
   // Connect to Arduino IoT Cloud
 
+  // Defined in thingProperties.h
+  initProperties();
   // FIXME: If we don't specify the network, begin() doesn't send any data.
   // However, if we are already conncected to a network, ArduinoIoTPreferredConnection doesn't seem to switch the network.
   ArduinoCloud.begin(ArduinoIoTPreferredConnection);
-
   // Enable Debuggin of the network, IoT Cloud connection, and errors. 4 is MAX
   setDebugMessageLevel(2);
   ArduinoCloud.printDebugInfo();
@@ -75,8 +73,6 @@ void setup()
     delay(2000);
   }
 
-  // Wait for the loading animation to finish
-  // delay(3300);
   matrix.clear();
   setServoPosition(SERVO_POSITION_UP);
   led = true;
@@ -86,7 +82,6 @@ void setup()
 void loop()
 {
   readAndSendCO2Value();
-  ArduinoCloud.update();
 
   if (cO2Level >= HIGH_CO2_THRESHOLD)
   {
@@ -103,6 +98,7 @@ void readAndSendCO2Value()
   if (airSensor.dataAvailable())
   {
     cO2Level = airSensor.getCO2();
+    ArduinoCloud.update();
     Serial.print("co2(ppm):");
     Serial.print(cO2Level);
 
@@ -163,8 +159,19 @@ void setServoPosition(int position)
 {
   if (servoPosition == position)
   {
+    Serial.println("Servo already in position. Skipping...");
     return;
   }
+
+  if (!servo.attached())
+  {
+    servo.attach(SERVO_PIN);
+    Serial.println("Attaching servo");
+  }
+
+  Serial.println("Moving servo...");
   servoPosition = position;
   servo.write(position);
+  delay(600);
+  servo.detach();
 }
